@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ppm-ad"
+version = "0.1.0"
+description = "Plastic Prototype Memory for few-shot industrial anomaly detection"
+requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+include = ["ppm_ad*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+
