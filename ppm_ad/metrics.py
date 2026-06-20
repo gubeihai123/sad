@@ -31,16 +31,18 @@ def aupro(masks: np.ndarray, scores: np.ndarray, max_fpr: float = 0.3, steps: in
     masks = masks.astype(bool)
     thresholds = np.linspace(float(scores.max()), float(scores.min()), steps)
     normal_pixels = (~masks).sum()
+    regions: list[tuple[int, np.ndarray]] = []
+    for image_index, mask in enumerate(masks):
+        components, count = ndimage.label(mask)
+        flat_components = components.ravel()
+        for component_id in range(1, count + 1):
+            regions.append((image_index, np.flatnonzero(flat_components == component_id)))
     points = []
     for threshold in thresholds:
         prediction = scores >= threshold
         fpr = np.logical_and(prediction, ~masks).sum() / max(normal_pixels, 1)
-        overlaps = []
-        for mask, pred in zip(masks, prediction):
-            components, count = ndimage.label(mask)
-            for component_id in range(1, count + 1):
-                component = components == component_id
-                overlaps.append(np.logical_and(component, pred).sum() / component.sum())
+        flat_prediction = prediction.reshape(len(prediction), -1)
+        overlaps = [flat_prediction[i, region].mean() for i, region in regions]
         points.append((fpr, float(np.mean(overlaps)) if overlaps else 0.0))
     points = np.asarray(sorted(points))
     keep = points[:, 0] <= max_fpr
@@ -77,5 +79,4 @@ def evaluate(labels, image_scores, masks, pixel_scores) -> dict[str, float]:
             "fragmentation": fragmentation(masks, pixel_scores, threshold),
             "pixel_threshold": threshold,
         }
-
 
