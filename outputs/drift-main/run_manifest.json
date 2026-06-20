@@ -1,0 +1,6 @@
+{
+  "device": "cuda",
+  "torch": "2.6.0+cu124",
+  "cuda": "12.4",
+  "rows_completed": 90
+}
