@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import random
 import time
-from dataclasses import asdict
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -268,5 +267,4 @@ def run(config_path: str, mode: str, run_name: str) -> Path:
         tqdm.write(f"Running {name} on {runner.device}")
         modes[name]()
     return runner.out
-
 
