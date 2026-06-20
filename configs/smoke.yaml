@@ -1,0 +1,45 @@
+seed: 2026
+device: auto
+data_root: ./data/mvtec_anomaly_detection
+output_root: ./outputs
+categories: [bottle]
+shots: [5]
+seeds: [0]
+image_size: 256
+batch_size: 8
+num_workers: 4
+
+features:
+  backbone: wide_resnet50_2
+  layers: [layer2, layer3]
+  projection_dim: 128
+  projection_fit_patches: 50000
+
+patchcore:
+  max_memory_patches: 50000
+  coreset_ratio: 0.1
+
+ppm:
+  prototypes: 64
+  radius_quantile: 0.95
+  temperature: 0.2
+  attractor_steps: 3
+  attractor_lr: 0.25
+  group_beta: 0.25
+  group_sigma_feature: 0.5
+  score_weights:
+    distance: 1.0
+    entropy: 0.25
+    margin: 0.25
+    residual: 0.15
+    stability: 0.15
+  plasticity_lr: 0.005
+  max_update_ratio: 0.05
+
+experiments:
+  ablation_shot: 10
+  k_values: [64, 128, 256, 512, 1024]
+  drift_shot: 10
+  drift_levels: [0.0, 0.1, 0.2, 0.3, 0.4]
+  save_heatmaps: true
+  heatmaps_per_category: 6

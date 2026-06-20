@@ -48,7 +48,8 @@ def aupro(masks: np.ndarray, scores: np.ndarray, max_fpr: float = 0.3, steps: in
     keep = points[:, 0] <= max_fpr
     if keep.sum() < 2:
         return 0.0
-    return float(np.trapz(points[keep, 1], points[keep, 0]) / max_fpr)
+    integrate = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
+    return float(integrate(points[keep, 1], points[keep, 0]) / max_fpr)
 
 
 def fragmentation(masks: np.ndarray, scores: np.ndarray, threshold: float) -> float:
